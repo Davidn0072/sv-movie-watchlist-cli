@@ -165,7 +165,15 @@ function AddMoviePage() {
           />
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between">
+          <button
+            type="submit"
+            disabled={isSubmitting || isGenerating}
+            className="rounded-md bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+          >
+            {isSubmitting ? 'Adding Movie...' : 'Add Movie'}
+          </button>
+
           <button
             type="button"
             onClick={handleGenerateDescription}
@@ -173,14 +181,6 @@ function AddMoviePage() {
             className="rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
           >
             {isGenerating ? 'Generating...' : 'Generate by AI'}
-          </button>
-
-          <button
-            type="submit"
-            disabled={isSubmitting || isGenerating}
-            className="rounded-md bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
-          >
-            {isSubmitting ? 'Adding Movie...' : 'Add Movie'}
           </button>
         </div>
       </form>
