@@ -27,6 +27,7 @@ function AllMoviesPage() {
   const [movies, setMovies] = useState(demoMovies);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [deletingMovieId, setDeletingMovieId] = useState('');
 
   useEffect(() => {
     async function loadMovies() {
@@ -51,8 +52,25 @@ function AllMoviesPage() {
     loadMovies();
   }, []);
 
-  function handleDelete(movieId: string) {
-    setMovies((currentMovies) => currentMovies.filter((movie) => movie._id !== movieId));
+  async function handleDelete(movieId: string) {
+    try {
+      setDeletingMovieId(movieId);
+      setErrorMessage('');
+
+      const response = await fetch(`${config.API_URL}/movies/${movieId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete movie');
+      }
+
+      setMovies((currentMovies) => currentMovies.filter((movie) => movie._id !== movieId));
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Unexpected error');
+    } finally {
+      setDeletingMovieId('');
+    }
   }
 
   return (
@@ -68,7 +86,12 @@ function AllMoviesPage() {
 
       <div className="mt-6 grid gap-4">
         {movies.map((movie) => (
-          <MovieCard key={movie._id} movie={movie} onDelete={handleDelete} />
+          <MovieCard
+            key={movie._id}
+            movie={movie}
+            onDelete={handleDelete}
+            isDeleting={deletingMovieId === movie._id}
+          />
         ))}
       </div>
     </section>
