@@ -9,6 +9,7 @@ function AddMoviePage() {
   const [genre, setGenre] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   function validateForm() {
     const trimmedTitle = title.trim();
@@ -66,6 +67,51 @@ function AddMoviePage() {
     }
   }
 
+  async function handleGenerateDescription() {
+    const trimmedTitle = title.trim();
+    const trimmedGenre = genre.trim();
+
+    if (trimmedTitle.length < 1 || trimmedTitle.length > 20) {
+      alert('Title is required and must be between 1 and 20 characters.');
+      return;
+    }
+
+    if (trimmedGenre.length < 1) {
+      alert('Genre is required and must contain at least 1 character.');
+      return;
+    }
+
+    try {
+      setIsGenerating(true);
+      const response = await fetch(`${config.API_URL}/movies/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: trimmedTitle,
+          genre: trimmedGenre,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate description.');
+      }
+
+      const data = await response.json();
+      const generatedDescription =
+        data && typeof data.description === 'string' ? data.description.trim() : '';
+
+      if (!generatedDescription) {
+        throw new Error('AI response did not include a valid description.');
+      }
+
+      setDescription(generatedDescription);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Unexpected error.');
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
   return (
     <section>
       <h2 className="text-2xl font-bold text-slate-800">Add Movie</h2>
@@ -119,13 +165,24 @@ function AddMoviePage() {
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="rounded-md bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
-        >
-          {isSubmitting ? 'Adding Movie...' : 'Add Movie'}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleGenerateDescription}
+            disabled={isGenerating || isSubmitting}
+            className="rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
+          >
+            {isGenerating ? 'Generating...' : 'Generate by AI'}
+          </button>
+
+          <button
+            type="submit"
+            disabled={isSubmitting || isGenerating}
+            className="rounded-md bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+          >
+            {isSubmitting ? 'Adding Movie...' : 'Add Movie'}
+          </button>
+        </div>
       </form>
     </section>
   );
