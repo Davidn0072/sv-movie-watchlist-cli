@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import MovieCard from '../components/MovieCard';
 
 const demoMovies = [
@@ -22,14 +23,20 @@ const demoMovies = [
 ];
 
 function AllMoviesPage() {
+  const [movies, setMovies] = useState(demoMovies);
+
+  function handleDelete(movieId: string) {
+    setMovies((currentMovies) => currentMovies.filter((movie) => movie._id !== movieId));
+  }
+
   return (
     <section>
       <h2 className="text-2xl font-bold text-slate-800">All Movies</h2>
       <p className="mt-2 text-sm text-slate-500">Demo data for UI preview (no server).</p>
 
       <div className="mt-6 grid gap-4">
-        {demoMovies.map((movie) => (
-          <MovieCard key={movie._id} movie={movie} onDelete={() => {}} />
+        {movies.map((movie) => (
+          <MovieCard key={movie._id} movie={movie} onDelete={handleDelete} />
         ))}
       </div>
     </section>
