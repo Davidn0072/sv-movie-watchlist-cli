@@ -53,6 +53,13 @@ function AllMoviesPage() {
   }, []);
 
   async function handleDelete(movieId: string) {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this movie? This action cannot be undone.'
+    );
+    if (!confirmed) {
+      return;
+    }
+
     try {
       setDeletingMovieId(movieId);
       setErrorMessage('');
