@@ -1,23 +1,22 @@
-import './App.css';
+import Sidebar from './components/Sidebar';
 
 function App() {
   return (
-    <div>
-      <h2 className='text-3xl font-bold underline text-red-500'>Hello World</h2>
-      <div id="result"></div>
-      <button className='bg-blue-500 text-white p-2 rounded-md' onClick={() => {
-        fetch('http://localhost:3000')
-          .then((res) => res.json())
-          .then((data) => {
-            document.getElementById('result')!.innerHTML = JSON.stringify(data, null, 2);
-          })
-          .catch((err) => console.log(err));
-      }}
-      >
-        Click me
-      </button>
+    <div className="min-h-screen bg-slate-100 text-slate-900">
+      <div className="mx-auto flex min-h-screen max-w-7xl shadow-xl">
+        <Sidebar />
+
+        <main className="flex-1 bg-white p-10">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-8">
+            <h2 className="text-2xl font-bold text-slate-800">Main Content Area</h2>
+            <p className="mt-3 text-slate-600">
+              Sidebar layout is ready. Next step is connecting each menu item to routes.
+            </p>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
 
-export default App
+export default App;
