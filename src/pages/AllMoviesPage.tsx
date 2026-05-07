@@ -2,29 +2,15 @@ import { useEffect, useState } from 'react';
 import MovieCard from '../components/MovieCard';
 import config from '../config';
 
-const demoMovies = [
-  {
-    _id: 'demo-1',
-    title: 'Inception',
-    genre: 'Sci-Fi',
-    description: 'A skilled thief enters dreams to plant an idea inside a target.',
-  },
-  {
-    _id: 'demo-2',
-    title: 'Parasite',
-    genre: 'Thriller',
-    description: 'Two families from different classes become dangerously connected.',
-  },
-  {
-    _id: 'demo-3',
-    title: 'Whiplash',
-    genre: 'Drama',
-    description: 'A young drummer faces intense pressure under a demanding mentor.',
-  },
-];
+type Movie = {
+  _id: string;
+  title: string;
+  genre: string;
+  description: string;
+};
 
 function AllMoviesPage() {
-  const [movies, setMovies] = useState(demoMovies);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [deletingMovieId, setDeletingMovieId] = useState('');
