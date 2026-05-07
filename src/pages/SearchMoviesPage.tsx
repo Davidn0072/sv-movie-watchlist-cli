@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import MovieCard from '../components/MovieCard';
 import config from '../config';
+import { deleteMovieById } from '../services/movieApi';
 
 type Movie = {
   _id: string;
@@ -53,14 +54,7 @@ function SearchMoviesPage() {
     try {
       setDeletingMovieId(movieId);
       setErrorMessage('');
-
-      const response = await fetch(`${config.API_URL}/movies/${movieId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete movie');
-      }
+      await deleteMovieById(movieId);
 
       setMovies((currentMovies) => currentMovies.filter((movie) => movie._id !== movieId));
     } catch (error) {
