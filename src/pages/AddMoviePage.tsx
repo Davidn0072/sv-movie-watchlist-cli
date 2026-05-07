@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import config from '../config';
 
 function AddMoviePage() {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [genre, setGenre] = useState('');
   const [description, setDescription] = useState('');
@@ -56,7 +58,7 @@ function AddMoviePage() {
       setTitle('');
       setGenre('');
       setDescription('');
-      alert('Movie created successfully.');
+      navigate('/all-movies');
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Unexpected error.');
     } finally {
