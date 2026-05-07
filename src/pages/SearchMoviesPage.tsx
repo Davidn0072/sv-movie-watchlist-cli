@@ -14,6 +14,7 @@ function SearchMoviesPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [deletingMovieId, setDeletingMovieId] = useState('');
 
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
@@ -41,6 +42,34 @@ function SearchMoviesPage() {
     return () => clearTimeout(timeoutId);
   }, [query]);
 
+  async function handleDelete(movieId: string) {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this movie? This action cannot be undone.'
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingMovieId(movieId);
+      setErrorMessage('');
+
+      const response = await fetch(`${config.API_URL}/movies/${movieId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete movie');
+      }
+
+      setMovies((currentMovies) => currentMovies.filter((movie) => movie._id !== movieId));
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Unexpected error.');
+    } finally {
+      setDeletingMovieId('');
+    }
+  }
+
   return (
     <section>
       <h2 className="text-2xl font-bold text-slate-800">Search Movies</h2>
@@ -64,7 +93,12 @@ function SearchMoviesPage() {
 
       <div className="mt-6 grid gap-4">
         {movies.map((movie) => (
-          <MovieCard key={movie._id} movie={movie} />
+          <MovieCard
+            key={movie._id}
+            movie={movie}
+            onDelete={handleDelete}
+            isDeleting={deletingMovieId === movie._id}
+          />
         ))}
       </div>
     </section>
