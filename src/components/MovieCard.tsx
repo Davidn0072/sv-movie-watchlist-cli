@@ -7,7 +7,7 @@ type Movie = {
 
 type MovieCardProps = {
   movie: Movie;
-  onDelete: (movieId: string) => void;
+  onDelete?: (movieId: string) => void;
   isDeleting?: boolean;
 };
 
@@ -23,14 +23,16 @@ function MovieCard({ movie, onDelete, isDeleting = false }: MovieCardProps) {
 
       <p className="mb-5 text-sm leading-6 text-slate-700">{movie.description}</p>
 
-      <button
-        type="button"
-        onClick={() => onDelete(movie._id)}
-        disabled={isDeleting}
-        className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
-      >
-        {isDeleting ? 'Deleting...' : 'Delete Movie'}
-      </button>
+      {onDelete && (
+        <button
+          type="button"
+          onClick={() => onDelete(movie._id)}
+          disabled={isDeleting}
+          className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+        >
+          {isDeleting ? 'Deleting...' : 'Delete Movie'}
+        </button>
+      )}
     </article>
   );
 }
